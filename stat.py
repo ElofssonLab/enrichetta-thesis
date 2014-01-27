@@ -6,22 +6,22 @@ n_residues={}
 for line in SeqIO.parse(dis_fasta,'fasta'):
 	dis=0
 	ordr=0
-	print line.id
-		
 	dis+=line.seq.count('1')
-
-	print 'disordered residues:', dis
 	ordr+=line.seq.count('0')
-	print 'ordered residues:',ordr
 	tot=ordr+dis
-	print 'total residues:',tot
 	dis_per= round((dis/(float(tot))*100),2)
 	ordr_per=round((ordr/(float(tot))*100),2)
-	print 'disordered', dis_per, '%'
-	print 'ordered', ordr_per, '%'
+	
 	disordered[line.id]=dis_per
 	ordered[line.id]=ordr_per
 	n_residues[line.id]=tot
+	
+	print line.id
+	print 'disordered residues:', dis
+	print 'ordered residues:',ordr
+	print 'total residues:',tot
+	print 'disordered', dis_per, '%'
+	print 'ordered', ordr_per, '%'
 
 tot_proteins=len(disordered)
 print
