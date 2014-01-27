@@ -57,9 +57,11 @@ print
 print av_len
 print 
 print 'Max Disorder'
+print len(key_max_dis)
 for key in key_max_dis:
 	print key, str(max_dis)+'%'
 print
 print 'Max Order'
+print len(key_max_ordr)
 for key in key_max_ordr:
 	print key, str(max_ordr)+'%'
