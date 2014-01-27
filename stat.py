@@ -6,8 +6,8 @@ n_residues={}
 for line in SeqIO.parse(dis_fasta,'fasta'):
 	dis=0
 	ordr=0
-	dis+=line.seq.count('1')
-	ordr+=line.seq.count('0')
+	dis+=line.seq.count('0')
+	ordr+=line.seq.count('1')
 	tot=ordr+dis
 	dis_per= round((dis/(float(tot))*100),2)
 	ordr_per=round((ordr/(float(tot))*100),2)
