@@ -87,7 +87,7 @@ with open(os.path.join('/home/enrichetta/Project/enrichetta-thesis','dataset.txt
 
 
 def general_stat():
-
+	
 	tot_proteins=len(disordered)
 	print
 	print 'Total number of proteins:', tot_proteins
@@ -104,6 +104,10 @@ def general_stat():
 
 	max_ordr=max(ordered.values())
 	key_max_ordr=[x for x,y in ordered.items() if y==max_ordr]
+	
+	av_dis=round(sum(disordered.values())/tot_proteins,2)
+	
+	
 
 	print
 	print 'Max length'
@@ -120,6 +124,10 @@ def general_stat():
 	print 'Average length'
 	print
 	print av_len
+	print
+	print 'Average Disorder %'
+	print
+	print str(av_dis)+'%' 
 	print
 	print 'Max Disorder'
 	print len(key_max_dis)
