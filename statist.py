@@ -1,5 +1,16 @@
 from Bio import SeqIO
 import re, os, sys
+def insert_column(file_name):
+	global num_hom	
+	num_hom={}
+	with open(file_name) as f:
+		f=f.readlines()[1:]
+		for lines in f:
+			lines=lines.split(',')
+			num_hom[lines[0]]=lines[7]
+	
+insert_column('/media/data/dataset_oxana/proteins.txt')
+
 def info_dataset(dis_fasta):
 	global disordered
 	disordered={}
@@ -57,19 +68,18 @@ def info_dataset(dis_fasta):
        			n_residues[line.id]=tot
 
  			line_str=str(line.seq)
-
+			
 			n=1	
-
 			regions[line.id]= [(a.start(),a.end()) for a in list(re.finditer('0+',line_str))]
-
-			n_regions[line.id]=len(regions)
+			
+			n_regions[line.id]=len(regions[line.id])
 		
-			print  '{0:^12} {1:^12} {2:^12} {3:^8} {4:^12} {5:^12} {6:^12} {7:^13} {8:^13} {9:<18}'.format(line.id, uniprot[line.id], unigene[line.id], n_residues[line.id], dis_res[line.id], ordr_res[line.id], disordered[line.id], ordered[line.id], n_regions[line.id], regions[line.id])
+			print  '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:10}'.format(line.id, uniprot[line.id], unigene[line.id], num_hom[line.id],  n_residues[line.id], dis_res[line.id], ordr_res[line.id], disordered[line.id], ordered[line.id], n_regions[line.id], regions[line.id])
 			
 with open(os.path.join('/home/enrichetta/Project/enrichetta-thesis','dataset.txt'),'w') as f:
 	saveout=sys.stdout
         sys.stdout=f
-	print '{0:^12} {1:^12} {2:^12} {3:^8} {4:^12} {5:^12} {6:^12} {7:^13} {8:^13} {9:<18}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'N_Dis_Regions', 'Coordinates')
+	print '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:100}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Num_Hom', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'Dis_Reg', 'Coor')
 	info_dataset('/media/data/dataset_oxana/disorder_annotation.fasta')
 	f.flush()
         f.close()
