@@ -79,7 +79,7 @@ def info_dataset(dis_fasta):
 with open(os.path.join('/home/enrichetta/Project/enrichetta-thesis','dataset.txt'),'w') as f:
 	saveout=sys.stdout
         sys.stdout=f
-	print '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:100}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Num_Hom', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'Dis_Reg', 'Coor')
+	print '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:10}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Num_Hom', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'Dis_Reg', 'Coor')
 	info_dataset('/media/data/dataset_oxana/disorder_annotation.fasta')
 	f.flush()
         f.close()
