@@ -1,4 +1,4 @@
- Disprot_ID   Uniprot_ID   Unigene_ID   Num_Hom   Tot_Res  Dis_Res  Ord_Res   %_Dis    %_Ord   Dis_Reg  Coor                                                                                                
+ Disprot_ID   Uniprot_ID   Unigene_ID   Num_Hom   Tot_Res  Dis_Res  Ord_Res   %_Dis    %_Ord   Dis_Reg  Coor      
   DP00001       Q9HFQ6                    1019      108      108       0      100.0     0.0       1     [(0, 108)]
   DP00002       P02400                    852       110      110       0      100.0     0.0       1     [(0, 110)]
   DP00003       P03265                     43       529       53      476     10.02    89.98      3     [(296, 331), (400, 406), (452, 464)]
