@@ -68,18 +68,17 @@ def info_dataset(dis_fasta):
        			n_residues[line.id]=tot
 
  			line_str=str(line.seq)
-			
-			n=1	
+
 			regions[line.id]= [(a.start(),a.end()) for a in list(re.finditer('0+',line_str))]
 			
 			n_regions[line.id]=len(regions[line.id])
 		
-			print  '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:10}'.format(line.id, uniprot[line.id], unigene[line.id], num_hom[line.id],  n_residues[line.id], dis_res[line.id], ordr_res[line.id], disordered[line.id], ordered[line.id], n_regions[line.id], regions[line.id])
-			
+			print  '{0:^12} {1:^10} {2:^10} {3:^7} {4:^7} {5:^7} {6:^7} {7:^7} {8:^7} {9:^7} {10:10}'.format(line.id, uniprot[line.id], unigene[line.id], num_hom[line.id],  n_residues[line.id], dis_res[line.id], ordr_res[line.id], disordered[line.id], ordered[line.id], n_regions[line.id],regions[line.id])
+
 with open(os.path.join('/home/enrichetta/Project/enrichetta-thesis','dataset.txt'),'w') as f:
 	saveout=sys.stdout
         sys.stdout=f
-	print '{0:^12} {1:^12} {2:^12} {3:^10} {4:^8} {5:^8} {6:^8} {7:^8} {8:^8} {9:^8} {10:10}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Num_Hom', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'Dis_Reg', 'Coor')
+	print '{0:^12} {1:^10} {2:^10} {3:^7} {4:^7} {5:^7} {6:^7} {7:^7} {8:^7} {9:^7} {10:10}'. format('Disprot_ID', 'Uniprot_ID', 'Unigene_ID', 'Num_Hom', 'Tot_Res', 'Dis_Res', 'Ord_Res', '%_Dis', '%_Ord', 'Dis_Reg', 'Coor')
 	info_dataset('/media/data/dataset_oxana/disorder_annotation.fasta')
 	f.flush()
         f.close()
