@@ -8,7 +8,8 @@ from Bio import SeqRecord
 from Bio.Seq import Seq
 from Bio.Alphabet.IUPAC import protein
 from Bio import AlignIO
-path='/media/data/a2m_prova/'
+from scipy import stats
+path='/media/data/hhblits_files/a2m/'
 path=sorted(glob.glob(path+'*.a2m'))
 
 dis_annotation={}
@@ -36,11 +37,16 @@ def entropy_matrix(files):
 	for el in pr:
     		alphabet.append(el)
 
-	#alphabet.append('-')
+	alphabet.append('-')
 	gap=0
-
+	pos=[]
+	n=0
+	for i in target:
+		if i.find('.')==0:
+			pos.append(n)
+		n+=1
+	
 	for element in target:
-   		gap+=element.count('.')
    		gap+= element.count('-')
 	thr=(len(target)-gap)*80/100
 
@@ -57,28 +63,28 @@ def entropy_matrix(files):
         		al.append(el)
 			hom_n+=1
 	hom_used[name]=hom_n
-	mat= np.zeros(shape=((len(target)),len(alphabet)))
+	mat= np.zeros(shape=((len(target)-ins),len(alphabet)))
 
 	for i in al:
-
-		for x, y in enumerate (i):
-        		
-
-
-			if y in alphabet:
-				n=alphabet.index(y)
-            			mat[x][n]+=1
-            
-        		else:
-            			pass
-
+		n=0
+		for x,y in enumerate(i):
+			
+			if not x in pos:
+				if y in alphabet:
+					m=alphabet.index(y)
+					mat[n][m]+=1
+					n+=1
+				else:	
+					pass
+			else:	
+				pass	
 
 	sumline=np.nansum(mat, axis=1)
-	for v in range(len(target)):
+	for v in range(len(target)-ins):
 		mat[v]/=sumline[v]
 
 
-	for v in range(len(target)):
+	for v in range(len(target)-ins):
 		mat[v]=mat[v]*np.log2(mat[v])
 	
 		mat[v]=np.absolute(mat[v])
@@ -86,9 +92,9 @@ def entropy_matrix(files):
 
 
 
-	df=pd.DataFrame(mat, index=[range(len(target))],columns=[alphabet])
+	df=pd.DataFrame(mat, index=[range(len(target)-ins)],columns=[alphabet])
 	pd.set_option('display.height',20)
-	pd.set_option('display.max_rows', len(target))
+	pd.set_option('display.max_rows', len(target)-ins)
 	pd.set_option('display.max_columns',len(alphabet))
 	pd.set_option('display.precision',3)
 	#print df
@@ -102,9 +108,7 @@ def entropy():
 	for x,y in zip(range(len(sum_h)),sum_h):
 	
 		entrop.append(round(y,2))
-	#print
-	#print entropy
-	#print
+	
 	dis_reg=[]
 	ord_reg=[]
 
@@ -114,9 +118,9 @@ def entropy():
 	
 			 entrop[j]='#'
 		
-	#print entropy	
+	
 	entrop=[x for x in entrop if x!='#']
-	#print len(entrop)
+	
 	return entrop
 
 def regions(dis_fasta):
@@ -136,6 +140,7 @@ def regions(dis_fasta):
 
 
 def disorder_entropy():
+	global dis_ar
 	
 	diss=[]
 	for element in sorted(dis_regions):
@@ -144,6 +149,7 @@ def disorder_entropy():
 		if element==name:
 			if  len(dis_regions[element])==0:
 				dis_annotation[name]='*'
+				dis_ar=np.array(diss, dtype=np.float64)
 			else:
 			
 			
@@ -160,18 +166,24 @@ def disorder_entropy():
 							s+=i
 						s=s/n
 						diss.append(round(s,2))
-			
+						dis_ar=np.array(diss, dtype=np.float64)
+
 						l=sum(diss)
 						x= len(diss)
 						dis_annotation[name]=round(l/x,2)
-def order_entropy():				
+	
+
+def order_entropy():
+	global ord_ar				
 	ordrr=[]
+	
 	for element in sorted(ord_regions):
 		n_ord_region[element]=len(ord_regions[element])
 		if element==name:
 		
 			if  len(ord_regions[element])==0:
 				ord_annotation[element]='*'
+				ord_ar=np.array(ordrr, dtype=np.float64)
 			else:
 				
 				for coor in ord_regions[element]:
@@ -190,13 +202,40 @@ def order_entropy():
 							s+=i
 						s=s/n
 						ordrr.append(round(s,2))
-				
+						ord_ar=np.array(ordrr, dtype=np.float64)
+						
 						l=sum(ordrr)
 						x= len(ordrr)
 						ord_annotation[name]=round(l/x,2)
 				
-	#print ord_annotation
-	#print dis_annotation
+	
+
+
+def t_test():
+	
+	global t_val, p_val
+	
+	p_val={}
+	t_val={}
+	if not ord_ar.size:
+		t_val[name]='*'
+		p_val[name]='*'
+	elif not dis_ar.size:
+		t_val[name]='*'
+		p_val[name]='*'
+	else:
+		t,p=stats.ttest_ind(dis_ar,ord_ar,False)
+		if np.isnan(t)==True:
+			t_val[name]='*'
+		else:	
+			t_val[name]=round(t,2)
+		if np.isnan(p)==True:
+			p_val[name]='*'
+		else:
+			p_val[name]=round(p,2)
+
+
+
 def results():
 	for k,j in zip(dis_annotation, ord_annotation):
 		if dis_annotation[k]!='*' and ord_annotation[j]!='*':
@@ -205,7 +244,7 @@ def results():
 			elif ord_annotation[k]==0.0:
 				av[k]=dis_annotation[k]
 			else:
-				#print dis_annotation[k], ord_annotation[k]
+				
 				av_H=dis_annotation[k]/ord_annotation[k]
 				av[k]=round(av_H,2)
 			
@@ -216,17 +255,18 @@ def results():
 					 
 	
 	
-	#print av
+	#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}'.format(name,dis_annotation[name],ord_annotation[name], t_val[name], p_val[name])
 	print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name,n_dis_region[name],n_ord_region[name],hom_original[name],hom_used[name],dis_annotation[name],ord_annotation[name],av[name])
 regions('/media/data/dataset_oxana/disorder_annotation.fasta')
 print '{0:^12} {1:^15} {2:^15} {3:^12} {4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','n_dis_region','n_ord_region','n_hom_orig','n_hom_used','<Hd>','<Ho>','av_entropy')
+#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}'.format('ID','<Hd>','<Ho>', 't-value', 'p-value')
 for files in path:
 	
 	entropy_matrix(files)
 	entropy()
 	disorder_entropy()
 	order_entropy()
-
+	t_test()
 	results()
 
 
