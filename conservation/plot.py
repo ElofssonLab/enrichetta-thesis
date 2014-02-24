@@ -1,7 +1,8 @@
-
+import numpy as np
 import matplotlib.pyplot as plt
 import csv
-
+from scipy import stats
+import math
 def plot_av(files):
     hd=[]
     ho=[]
@@ -30,11 +31,21 @@ def plot_av(files):
 	del ho[n-offset]
 	offset+=1
   
-    print hd
-    print ho
-    plt.plot(hd,ho, 'go')
+    
+    hd=np.array(hd,dtype=np.float32)
+    ho=np.array(ho,dtype=np.float32)
+    s,p=stats.shapiro(hd)
+    
+    t,p=stats.ttest_rel(hd,ho)
+    
+    print t,p
+    print s,p
+    plt.plot(hd,ho, 'g.')
     plt.xlabel('<Hd>')
     plt.ylabel('<Ho>')
+    #plt.text(3.0,0.5, 't='+str(round(t,2)))
+    #plt.text(3.0,0.3, 'p-value='+str(round(p,2)))
+    plt.savefig('Hd_vs_Ho.pdf')
     plt.show()
     
 
@@ -50,39 +61,89 @@ def plot(files):
 	ent.append(x[7])
     del hom[0]
     del ent[0]
-    print hom
-    print ent
-    plt.plot(hom,ent, 'ro')
+    
+    #t-test#
+    
+    hom=np.array(hom,dtype=np.float32)
+    ent=np.array(ent,dtype=np.float32)
+   
+    two_sample=stats.ttest_rel(hom,ent)
+    print two_sample
+    plt.plot(hom,ent, 'r.')
     plt.xlabel('Number homologs')
-    plt.ylabel('<Entropy>')
+    plt.ylabel('<Entropy>=<Hd>/<Ho>')
+    plt.savefig('nhom_vs_entropy.pdf')
     plt.show()
-'''
-def plot_species(files,spec):
-    species={}
-    entropies={}
-    f=open(spec,'r')
-    f=f.readlines()
-    f=[i.split(',') for i in f]
-    for line in f:
+   
+def lenvsreg(files):
+	dis_len=[]
+	dis_ent=[]
+	ord_len=[]
+	ord_ent=[]
 
-        species[line[0]]=line[3]
+	f=csv.reader(open(files,'rb'))
+	for row in f:
+		x=row[0].split()
+		dis_len.append(x[1])
+		dis_ent.append(x[2])
+		ord_len.append(x[3])
+		ord_ent.append(x[4])
+	del dis_len[0]
+	del dis_ent[0]
+	del ord_len[0]
+	del ord_ent[0]
+	
+	dis_ent=[x for x in dis_ent if x!= 'None']
+	dis_len=[x for x in dis_len if x!= 'None']
+	ord_ent=[x for x in ord_ent if x!= 'None']
+	ord_len=[x for x in ord_len if x!= 'None']
+	
+	plt.plot(dis_len,dis_ent, 'r.')
+	plt.plot(ord_len,ord_ent, 'g.')
+	plt.show()
+	
+def histogram(files):
+	ent=[]
+	f=csv.reader(open(files, 'rb'))
+		
+	for row in f:
+        	x=row[0].split()
+		ent.append(x[7])
+	del ent[0]
+	
+	ent=np.array(ent,dtype=np.float32)
+	
+	plt.hist(ent, bins=30)
+	plt.ylabel('Frequencies')
+    	plt.xlabel('<Entropy>=<Hd>/<Ho>')
+	
+	plt.savefig('Histogram.pdf')
+	plt.show()
+def ttest(files):
+	ttest=[]
+	f=csv.reader(open(files, 'rb'))
+		
+	for row in f:
+        	x=row[0].split()
+		ttest.append(x[3])
+	del ttest[0]
+	rem_tt=[]
+	for n in range(len(ttest)):
+		if ttest[n]=='*':
+			rem_tt.append(n)
     
-    f=csv.reader(open(files,'rb'))
-    for row in f:
-        x=row[0].split()
-    	entropies[x[0]]=x[7]
- 
-    
-        
-    del species['disprotID']
-    spec=[]
-    for x in species:
-	spec.append(species[x])
-    spec=set(spec)
-    
-	#if species[x]=='Homo sapiens':
-	#	hom_sap.appendentropies[x]
-plot_species('/home/enrichetta/Desktop/prova.txt', '/media/data/dataset_oxana/proteins.txt')
-'''
-plot_av('/home/enrichetta/Desktop/prova.txt')
-plot('/home/enrichetta/Desktop/prova.txt')
+    	offset=0   
+   	for n in sorted(rem_tt):
+		del ttest[n-offset]
+		offset+=1
+	ttest=np.array(ttest,dtype=np.float32)
+	plt.title('t-test')
+	plt.hist(ttest, bins=30)
+	plt.savefig('ttest.pdf')
+	plt.show()
+	
+ttest('/home/kettina/Scrivania/ttest.txt')
+plot_av('/home/kettina/Scrivania/result.txt')
+plot('/home/kettina/Scrivania/result.txt')
+lenvsreg('/home/kettina/Scrivania/res_len.txt')
+histogram('/home/kettina/Scrivania/result.txt')
