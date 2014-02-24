@@ -142,8 +142,8 @@ def ttest(files):
 	plt.savefig('ttest.pdf')
 	plt.show()
 	
-ttest('/home/kettina/Scrivania/ttest.txt')
-plot_av('/home/kettina/Scrivania/result.txt')
-plot('/home/kettina/Scrivania/result.txt')
-lenvsreg('/home/kettina/Scrivania/res_len.txt')
-histogram('/home/kettina/Scrivania/result.txt')
+ttest('/home/enrichetta/Project/enrichetta-thesis/conservation/ttest.txt')
+plot_av('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
+plot('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
+lenvsreg('/home/enrichetta/Project/enrichetta-thesis/conservation/res_len.txt')
+histogram('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
