@@ -168,7 +168,7 @@ def disorder_entropy():
 							
 						s=0
 						n=0
-						for i in entrop[x:y]: 
+						for i in entrop[x:y+1]: 
 							n+=1
 							s+=i
 						s=s/n
@@ -213,7 +213,7 @@ def order_entropy():
 							
 						s=0
 						n=0
-						for i in entrop[x:y]: 
+						for i in entrop[x:y+1]: 
 							n+=1
 							s+=i
 						s=s/n
@@ -272,14 +272,14 @@ def results():
 			av[k]=dis_annotation[k]
 					 
 	
-	#for el in map(None,len_d,dis_ar,len_o,ord_ar):
-		#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name ,el[0], el[1], el[2], el[3], dis_annotation[name], ord_annotation[name], av[name])
+	for el in map(None,len_d,dis_ar,len_o,ord_ar):
+		print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name ,el[0], el[1], el[2], el[3], dis_annotation[name], ord_annotation[name], av[name])
 
 	#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}'.format(name,dis_annotation[name],ord_annotation[name], t_val[name], p_val[name])
-	print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name,n_dis_region[name],n_ord_region[name],hom_original[name],hom_used[name],dis_annotation[name],ord_annotation[name],av[name])
+	#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name,n_dis_region[name],n_ord_region[name],hom_original[name],hom_used[name],dis_annotation[name],ord_annotation[name],av[name])
 
-#print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','len_dis_reg','dis_H', 'len_ord_reg', 'ord_H','<Hd>','<Ho>','av_entropy')
-print '{0:^12} {1:^15} {2:^15} {3:^12} {4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','n_dis_region','n_ord_region','n_hom_orig','n_hom_used','<Hd>','<Ho>','av_entropy')
+print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','len_dis_reg','dis_H', 'len_ord_reg', 'ord_H','<Hd>','<Ho>','av_entropy')
+#print '{0:^12} {1:^15} {2:^15} {3:^12} {4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','n_dis_region','n_ord_region','n_hom_orig','n_hom_used','<Hd>','<Ho>','av_entropy')
 #print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}'.format('ID','<Hd>','<Ho>', 't-value', 'p-value')
 
 regions('/media/data/dataset_oxana/disorder_annotation.fasta')
