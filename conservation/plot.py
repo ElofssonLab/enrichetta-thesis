@@ -68,7 +68,7 @@ def plot(files):
     ent=np.array(ent,dtype=np.float32)
    
     two_sample=stats.ttest_rel(hom,ent)
-    print two_sample
+    
     plt.plot(hom,ent, 'r.')
     plt.xlabel('Number homologs')
     plt.ylabel('<Entropy>=<Hd>/<Ho>')
@@ -98,8 +98,14 @@ def lenvsreg(files):
 	ord_ent=[x for x in ord_ent if x!= 'None']
 	ord_len=[x for x in ord_len if x!= 'None']
 	
-	plt.plot(dis_len,dis_ent, 'r.')
-	plt.plot(ord_len,ord_ent, 'g.')
+	plt.plot(dis_len,dis_ent, 'r.', label='Disordered')
+	plt.plot(ord_len,ord_ent, 'g.', label='Ordered')
+	legend=plt.legend(loc='upper center', shadow=True, numpoints=1)
+	frame=legend.get_frame()
+	frame.set_facecolor('0.90')
+	plt.xlabel('Regions length')
+	plt.ylabel('Regions entropy')
+	plt.savefig('lenvsreg.pdf')
 	plt.show()
 	
 def histogram(files):
@@ -138,12 +144,14 @@ def ttest(files):
 		offset+=1
 	ttest=np.array(ttest,dtype=np.float32)
 	plt.title('t-test')
+	plt.xlabel('t-value')
+        plt.ylabel('Frequencies')
 	plt.hist(ttest, bins=30)
 	plt.savefig('ttest.pdf')
 	plt.show()
 	
-ttest('/home/enrichetta/Project/enrichetta-thesis/conservation/ttest.txt')
-plot_av('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
-plot('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
-lenvsreg('/home/enrichetta/Project/enrichetta-thesis/conservation/res_len.txt')
-histogram('/home/enrichetta/Project/enrichetta-thesis/conservation/result.txt')
+ttest('/home/enrichetta/Project/enrichetta-thesis/conservation/ttest2.txt')
+plot_av('/home/enrichetta/Project/enrichetta-thesis/conservation/result2.txt')
+plot('/home/enrichetta/Project/enrichetta-thesis/conservation/result2.txt')
+lenvsreg('/home/enrichetta/Project/enrichetta-thesis/conservation/res_len2.txt')
+histogram('/home/enrichetta/Project/enrichetta-thesis/conservation/result2.txt')
