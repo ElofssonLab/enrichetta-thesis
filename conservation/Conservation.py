@@ -1,6 +1,5 @@
 import string,sys,math,glob,os,sys,re
 import pandas as pd
-from pandas import merge
 import numpy as np
 np.set_printoptions(threshold=np.nan)
 from Bio import SeqIO
