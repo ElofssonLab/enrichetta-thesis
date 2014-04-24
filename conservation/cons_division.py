@@ -3,8 +3,8 @@ import os,sys
 import matplotlib.pyplot as plt
 import itertools
 def info(files):
-	global tot, cons, notcons,res, dic_entrop
-	global consH_Hd,consH_notHd,notconsH_consHd,notconsH_Hd
+	global tot, cons, notcons,res, dic_entrop,Hd
+	global consH_Hd,consH_notHd,notconsH_consHd,notconsH_Hd,cons_Hd,notcons_Hd
 	dic_entrop={}
 	dic_Hd={}
 	dic_H={}
@@ -15,6 +15,8 @@ def info(files):
 	notconsH_Hd=[]
 	cons=[]
 	notcons=[]
+	cons_Hd=[]
+	notcons_Hd=[]
 	f=csv.reader(open(files,'rb'))
 	for row in f:
 		x=row[0].split()
@@ -54,11 +56,15 @@ def info(files):
 			notconsH_consHd.append(y)
 		if dic_H[x]>2 and dic_Hd[y]>2:
 			notconsH_Hd.append(y)
-	
+	for k,v in dic_Hd.iteritems():
+		if v <=2:
+			cons_Hd.append(k)
+		else:
+			notcons_Hd.append(k)
 
 	tot=itertools.izip_longest(consH_Hd,consH_notHd,notconsH_consHd,notconsH_Hd,fillvalue='*')
 	res=itertools.izip_longest(cons, notcons,fillvalue='*')
-	
+	Hd=itertools.izip_longest(cons_Hd, notcons_Hd,fillvalue='*')
 def print_result1():
 	with open(os.path.join('/home/enrichetta/Documents/Project/Results','subset.txt'),'w') as p:
 		saveout=sys.stdout
@@ -69,8 +75,19 @@ def print_result1():
 			print '{0:20} {1:20} {2:20} {3:20}'.format(el[0],el[1],el[2],el[3])
 		p.close()
 		sys.stdout=saveout
-	
+
 def print_result2():
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','subsetHd.txt'),'w') as p:
+		saveout=sys.stdout
+		sys.stdout=p
+		print '{0:20} {1:20}'.format('cons_Hd','notcons_Hd')
+		for el in Hd:
+		
+			print '{0:20} {1:20} '.format(el[0],el[1])
+		p.close()
+		sys.stdout=saveout
+	
+def print_result3():
 	with open(os.path.join('/home/enrichetta/Documents/Project/Results','conservation.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
@@ -121,6 +138,23 @@ def analysis():
 		if el in notcons:
 			NOTnotconsH_Hd.append(el)
 	print CONconsH_notHd
+def analysis2():
+	global CONcons_Hd, NOTcons_Hd,NOTnotcons_Hd,CONnotcons_Hd
+	CONcons_Hd=[]
+	NOTcons_Hd=[]
+	CONnotcons_Hd=[]
+	NOTnotcons_Hd=[]
+	for el in cons_Hd:
+		if el in cons:
+			CONcons_Hd.append(el)
+		if el in notcons:
+			NOTcons_Hd.append(el)
+	for el in notcons_Hd:
+		if el in cons:
+			CONnotcons_Hd.append(el)
+		if el in notcons:
+			NOTnotcons_Hd.append(el)
+	
 def result():
 	with open(os.path.join('/home/enrichetta/Documents/Project/Results','Consnotcons.txt'),'w') as p:
 		saveout=sys.stdout
@@ -131,10 +165,23 @@ def result():
 		print '{0:15} {1:12} {2:12} '.format('notconsH_Hd', len(CONnotconsH_Hd), len(NOTnotconsH_Hd))	
 		p.close()
 		sys.stdout=saveout
+
+def result2():
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','ConsnotconsHd.txt'),'w') as p:
+		saveout=sys.stdout
+		sys.stdout=p
+		print '{0:15} {1:12} {2:12} '.format('cons_Hd' ,len(CONconsH_Hd), len(NOTconsH_Hd))
+		
+		print '{0:15} {1:12} {2:12} '.format('notcons_Hd', len(CONnotcons_Hd), len(NOTnotcons_Hd))
+		
+		p.close()
+		sys.stdout=saveout
+
 if __name__ == '__main__':
 	info('/home/enrichetta/Documents/Project/Results/generalresult.txt')
 	print_result1()	
 	print_result2()
 	analysis()
+	analysis2()
 	result()
-
+	result2()
