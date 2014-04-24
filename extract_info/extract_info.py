@@ -14,7 +14,12 @@ def ids(files):
 		x=row[0].split()
 		dic_id[x[0]]=x[1]
 	del dic_id['Disprot_ID']
-	
+def extract_col(files):
+	f=csv.reader(open(files,'rb'))
+	for row in f:
+		x=row[0].split()	
+	col=len(x)
+	return col
 def info(files,n): # n is the column number that you want extract
 	global ids,file_name,temp_id
 	ids=[]	
@@ -121,7 +126,7 @@ def empty(files):
 		os.remove('/home/enrichetta/Documents/Project/Download/'+el+'.txt')
 def parse(files):
 	global name,spec
-	global GOs,Pfam,Ensembl
+	global GOs,Pfam,Ensembl,String
 	global species,spec,tax
 	global idss
 	spec={}
@@ -132,8 +137,10 @@ def parse(files):
 	GOs={}
 	Pfam={}
 	Ensembl={}
+	String={}
 	pfam=[]
 	ensembl=[]
+	string=[]
 	tax={}
 	species={}
 	idss={}
@@ -149,7 +156,7 @@ def parse(files):
 			x=len(record.cross_references)
 			c=0
 			d=0
-			
+			e=0
     			for l in record.cross_references:
 				
 				if l[0]=='Pfam':
@@ -198,40 +205,33 @@ def parse(files):
 				if x-d==x:
 					ensembl.append('*')
 				
-				
+				if l[0]=='STRING':
+					
+					e+=1
+					if x-e!=x:
+						string.append(l[1])
+				if x-e==x:	
+					string.append('*')
 				
 		x=len(sorted(set(pfam)))
+		y=len(sorted(set(string)))
 		
 		pfam=sorted(set(pfam))
 		ensembl=sorted(set(ensembl))
+		string=sorted(set(string))
 		
 		if x!=1:
 			del pfam[0]
 		for l in ensembl:
 			if len(ensembl)!= 1 and l=='*':
 				del ensembl[0]
+		if y!=1:
+			del string[0]
 		Pfam[name]=pfam
 		Ensembl[name]=ensembl
 		
 		GOs[name]=gOs
-		'''
-		for l in EnsemblBacteria:
-			if len(EnsemblBacteria)!= 1 and l=='*':
-				del EnsemblBacteria[0]
-		
-		for l in EnsemblFungi:
-			if len(EnsemblFungi)!= 1 and l=='*':
-				del EnsemblFungi[0]
-		for l in EnsemblMetazoa:
-			if len(EnsemblMetazoa)!= 1 and l=='*':
-				del EnsemblMetazoa[0]
-		for l in EnsemblPlants:
-			if len(EnsemblPlants)!= 1 and l=='*':
-				del (EnsemblPlants)[0]
-		for l in EnsemblProtists:
-			if len (EnsemblProtists)!=1 and l=='*':
-				del EnsemblProtists[0]
-		'''
+		String[name]=string
 	except:
 		pass
 
@@ -328,7 +328,28 @@ def printensembl():
 			if key in Ensembl:
 				for l in Ensembl[key]:
 					print'{0:12} {1:12} {2:15} '.format(value,key, l)
-		
+
+def printstring():
+	tmp_dic={}
+	for key,value in temp_id.items():
+		if value==name:
+			
+			if value in String:
+				for el in String[value]:
+					print'{0:12} {1:12} {2:12} '.format( key,value, el)
+		if type(value) is list:
+			for j in value:
+				tmp_dic[j]=key
+	
+	for key,value in sorted(tmp_dic.items()):
+			
+			if key in String:
+				
+				for l in String[key]:
+
+				
+					print'{0:12} {1:12} {2:12} '.format( value,key,l)
+
 def delete():
 	fil=glob.glob('/home/enrichetta/Documents/Project/Download/*')
 	fil2=glob.glob('/home/enrichetta/Documents/Project/Download2/*')
@@ -340,9 +361,9 @@ def delete():
 
 if __name__=='__main__':
 	ids('/home/enrichetta/Documents/Project/Results/dataset.txt')
-	
-	for n in range(4):
-		info('/home/enrichetta/Documents/Project/Results/subset.txt',n) #select the column number
+	col=extract_col('/home/enrichetta/Documents/Project/Results/subsetHd.txt')
+	for n in range(col):
+		info('/home/enrichetta/Documents/Project/Results/subsetHd.txt',n) #select the column number
 		
 		download()
 		
@@ -408,6 +429,20 @@ if __name__=='__main__':
 			
 				printensembl()
 		
+			f.flush()
+        		f.close()
+        		sys.stdout=saveout
+		with open(os.path.join('/home/enrichetta/Documents/Project/Results/Comparison/'+file_name,file_name+'String.txt'),'w') as f:
+			saveout=sys.stdout
+        		sys.stdout=f
+			print'{0:12} {1:12} {2:12} '.format('ID','Uniprot', 'String')
+			
+			for files in path:
+
+				parse(files)
+
+				printstring()
+			
 			f.flush()
         		f.close()
         		sys.stdout=saveout
