@@ -9,8 +9,8 @@ from Bio import AlignIO
 from scipy import stats
 #path='/media/kettina/D874-68C8/alignment/fasta/'
 #path='/home/kettina/Scrivania/prova/'
-path='/media/kettina/D874-68C8/STOCKHOLM_DISPROT/'
-#path='/home/enrichetta/Documents/Disprot/'
+#path='/media/kettina/D874-68C8/STOCKHOLM_DISPROT/'
+path='/home/enrichetta/Documents/Disprot/'
 path=sorted(glob.glob(path+'*.sth'))
 
 def variable():
@@ -268,7 +268,7 @@ def results():
 			av[k]=dis_annotation[k]
 
 def print_result1():
-	with open(os.path.join('/home/kettina/Scrivania/prova','generalresult.txt'),'w') as p:
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','generalresult.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:^12} {1:^15} {2:^12} {3:^12} {4:^10}{5:^15}{6:^10}{7:^12}'.format('ID','n_dis_region','n_ord_region','n_hom_orig','n_hom_used','<Hd>','<Ho>','av_entropy')
@@ -283,7 +283,7 @@ def print_result1():
 		sys.stdout=saveout
 
 def print_result2():
-	with open(os.path.join('/home/kettina/Scrivania/prova','resultwhitlen.txt'),'w') as p:
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','resultwhitlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}{8:^12}{9:^12}'.format('ID','coor','len_dis_reg','dis_H', 'coor','len_ord_reg', 'ord_H','<Hd>','<Ho>','av_entropy')
@@ -299,7 +299,7 @@ def print_result2():
 
 def print_result3():
 	
-	with open(os.path.join('/home/kettina/Scrivania/prova','disresultlen.txt'),'w') as p:
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','disresultlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:^12} {1:^15} {2:^15} {3:^15}'.format('ID','coor','len_dis_reg','dis_H')
@@ -315,7 +315,7 @@ def print_result3():
 
 def print_result4():
 	
-	with open(os.path.join('/home/kettina/Scrivania/prova','ordresultlen.txt'),'w') as p:
+	with open(os.path.join('/home/enrichetta/Documents/Project/Results','ordresultlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:^12} {1:^15} {2:^15} {3:^15}'.format('ID','coor','len_ord_reg' ,'ord_H')
@@ -330,8 +330,8 @@ def print_result4():
 		sys.stdout=saveout
 
 if __name__ == '__main__':
-	#regions('/home/enrichetta/Documents/Project/Dataset_oxana/disorder_annotation.fasta')
-	regions('/home/kettina/Scrivania/disorder_annotation.fasta')
+	regions('/home/enrichetta/Documents/Project/Dataset_oxana/disorder_annotation.fasta')
+	#regions('/home/kettina/Scrivania/disorder_annotation.fasta')
 	variable()
 	for files in path:
 		entropy_matrix(files)
