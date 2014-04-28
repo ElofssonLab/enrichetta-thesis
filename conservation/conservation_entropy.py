@@ -8,13 +8,13 @@ from Bio.Alphabet.IUPAC import protein
 from Bio import AlignIO
 from scipy import stats
 #path='/media/kettina/D874-68C8/alignment/fasta/'
-#path='/media/kettina/D874-68C8/alignment/prova/'
-#path='/media/D874-68C8/alignment/fasta/'
-path='/home/enrichetta/Documents/Disprot/'
+#path='/home/kettina/Scrivania/prova/'
+path='/media/kettina/D874-68C8/STOCKHOLM_DISPROT/'
+#path='/home/enrichetta/Documents/Disprot/'
 path=sorted(glob.glob(path+'*.sth'))
 
 def variable():
-	global dis_annotation, ord_annotation, n_dis_region, n_ord_region, av, disar, ordar, hom_used, hom_original, leno, lend, locdis,locord
+	global dis_annotation, ord_annotation, n_dis_region, n_ord_region, av, disar, ordar, hom_used, hom_original, leno, lend, coordis,coorord
 	dis_annotation={}
 	ord_annotation={}
 	n_dis_region={}
@@ -26,8 +26,8 @@ def variable():
 	hom_original={}
 	leno={}
 	lend={}
-	locdis={}
-	locord={}
+	coordis={}
+	coorord={}
 
 def entropy_matrix(files):
 	
@@ -117,25 +117,31 @@ def regions(dis_fasta):
 def disorder_entropy():
 	global loc_dis
 	len_d=[]
-	loc_dis=[]
+	
 	diss=[]
+	cor=[]
 	for element in sorted(dis_regions):	
 		n_dis_region[element]=len(dis_regions[element])
 		if element==name:
 			if  len(dis_regions[element])==0:
 				disar[element]=[]
 				ln_d=  None
+				c=None
 				len_d.append(ln_d)
+				cor.append(c)
 				lend[element]=len_d
-				locdis[element]=loc_dis			
+				
+				coordis[element]=cor		
 			else:
 				for coor in dis_regions[name]:	
 					if coor!=' ':
 						x=int(coor[0])
 						y=int(coor[1])
 						ln_d=y-x
+						c=str(x)+'-'+str(y)
 						if ln_d>=30:
 							len_d.append(ln_d)
+							cor.append(c)
 							s=0
 							n=0
 							for i in entrop[x:y+1]: 
@@ -148,28 +154,35 @@ def disorder_entropy():
 		
 				lend[element]=len_d
 				disar[element]=diss
+				coordis[element]=cor
 				
 
 def order_entropy():	
 	ordrr=[]
 	len_o=[]
+	cor=[]
 	for element in sorted(ord_regions):
 		n_ord_region[element]=len(ord_regions[element])
 		if element==name:
 			if  len(ord_regions[element])==0:
 				ln_o= None
+				c=None
 				len_o.append(ln_o)
 				leno[name]=len_o
 				ordar[element]=ordrr
+				cor.append(c)
+				coorord[element]=cor
 				
 			else:
 				for coor in ord_regions[element]:	
 					if coor!=' ':
 						x=int(coor[0])
 						y=int(coor[1])
+						c=str(x)+'-'+str(y)
 						ln_o=y-x
 						if ln_o >=30:			
 							len_o.append(ln_o)
+							cor.append(c)
 							s=0
 							n=0
 							for i in entrop[x:y+1]: 
@@ -182,6 +195,7 @@ def order_entropy():
 
 				leno[element]=len_o
 				ordar[element]=ordrr
+				coorord[element]=cor
 				
 def normalize_result():
 	global minmax
@@ -254,7 +268,7 @@ def results():
 			av[k]=dis_annotation[k]
 
 def print_result1():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','generalresult.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/prova','generalresult.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:^12} {1:^15} {2:^12} {3:^12} {4:^10}{5:^15}{6:^10}{7:^12}'.format('ID','n_dis_region','n_ord_region','n_hom_orig','n_hom_used','<Hd>','<Ho>','av_entropy')
@@ -269,55 +283,55 @@ def print_result1():
 		sys.stdout=saveout
 
 def print_result2():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','resultwhitlen.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/prova','resultwhitlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
-		print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format('ID','len_dis_reg','dis_H', 'len_ord_reg', 'ord_H','<Hd>','<Ho>','av_entropy')
+		print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}{8:^12}{9:^12}'.format('ID','coor','len_dis_reg','dis_H', 'coor','len_ord_reg', 'ord_H','<Hd>','<Ho>','av_entropy')
 		for k,v in sorted(leno.iteritems()):
-			if k in ordar and lend and disar and dis_annotation and ord_annotation and av:
-				for el in map(None,lend[k], disar[k],v, ordar[k]):
+			if k in ordar and lend and disar and dis_annotation and ord_annotation and av and coorord and coordis:
+				for el in map(None,coordis[k],lend[k], disar[k],coorord[k],v, ordar[k]):
 					try:
-						print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format( k,el[0],el[1], el[2], el[3], dis_annotation[k], ord_annotation[k], av[k])
+						print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}{8:^12}{9:^12}'.format( k,el[0],el[1], el[2], el[3], el[4],el[5],dis_annotation[k], ord_annotation[k], av[k])
 					except:
-						print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}'.format(name ,'*', '*', '*', '*', '*', '*', '*')
+						print '{0:^12} {1:^15} {2:^15} {3:^12}{4:^12}{5:^12}{6:^12}{7:^12}{8:^12}{9:^12}'.format(name ,'*', '*', '*', '*', '*', '*', '*','*', '*')
 		p.close()
 		sys.stdout=saveout
 
 def print_result3():
 	
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','disresultlen.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/prova','disresultlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
-		print '{0:^12} {1:^15} {2:^15} '.format('ID','len_dis_reg','dis_H')
+		print '{0:^12} {1:^15} {2:^15} {3:^15}'.format('ID','coor','len_dis_reg','dis_H')
 		for k,v in sorted(lend.iteritems()):
-			if k in disar and dis_annotation :
-				for el in map(None,v,disar[k]):
+			if k in disar and dis_annotation and coordis :
+				for el in map(None, coordis[k],v,disar[k]):
 					try:
-						print '{0:^12} {1:^15} {2:^15} '.format( k,el[0],el[1])
+						print '{0:^12} {1:^15} {2:^15} {3:^15}'.format( k,el[0],el[1],el[2])
 					except:
-						print '{0:^12} {1:^15} {2:^15} '.format(k ,'*', '*', )
+						print '{0:^12} {1:^15} {2:^15}{3:^15} '.format(k ,'*', '*','*','*' )
 		p.close()
 		sys.stdout=saveout
 
 def print_result4():
 	
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','ordresultlen.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/prova','ordresultlen.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
-		print '{0:^12} {1:^15} {2:^15} '.format('ID','len_ord_reg' ,'ord_H')
+		print '{0:^12} {1:^15} {2:^15} {3:^15}'.format('ID','coor','len_ord_reg' ,'ord_H')
 		for k,v in sorted(leno.iteritems()):
-			if k in ordar and ord_annotation:
-				for el in map(None,v,ordar[k]):
+			if k in ordar and ord_annotation and coorord:
+				for el in map(None,coorord[k],v,ordar[k]):
 					try:
-						print '{0:^12} {1:^15} {2:^15} '.format( k,el[0],el[1])
+						print '{0:^12} {1:^15} {2:^15}{3:^15} '.format( k,el[0],el[1], el[2])
 					except:
-						print '{0:^12} {1:^15} {2:^15} '.format(k ,'*', '*', '*')
+						print '{0:^12} {1:^15} {2:^15}{3:^15} '.format(k ,'*', '*', '*', '*')
 		p.close()
 		sys.stdout=saveout
 
 if __name__ == '__main__':
-	regions('/home/enrichetta/Documents/Project/Dataset_oxana/disorder_annotation.fasta')
-	#regions('/home/kettina/Scrivania/disorder_annotation.fasta')
+	#regions('/home/enrichetta/Documents/Project/Dataset_oxana/disorder_annotation.fasta')
+	regions('/home/kettina/Scrivania/disorder_annotation.fasta')
 	variable()
 	for files in path:
 		entropy_matrix(files)
