@@ -66,7 +66,7 @@ def info(files):
 	res=itertools.izip_longest(cons, notcons,fillvalue='*')
 	Hd=itertools.izip_longest(cons_Hd, notcons_Hd,fillvalue='*')
 def print_result1():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','subset.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/Project/Results','subset.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:20} {1:20} {2:20} {3:20}'.format('consH_Hd','consH_notHd','notconsH_consHd','notconsH_Hd')
@@ -77,7 +77,7 @@ def print_result1():
 		sys.stdout=saveout
 
 def print_result2():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','subsetHd.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/Project/Results','subsetHd.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:20} {1:20}'.format('cons_Hd','notcons_Hd')
@@ -88,7 +88,7 @@ def print_result2():
 		sys.stdout=saveout
 	
 def print_result3():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','conservation.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/Results','conservation.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print'{0:^30} {1:^35}'.format('Conserved','Not Conserved')
@@ -156,7 +156,7 @@ def analysis2():
 			NOTnotcons_Hd.append(el)
 	
 def result():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','Consnotcons.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/Project/Results','Consnotcons.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:15} {1:12} {2:12} '.format('consH_Hd' ,len(CONconsH_Hd), len(NOTconsH_Hd))
@@ -167,7 +167,7 @@ def result():
 		sys.stdout=saveout
 
 def result2():
-	with open(os.path.join('/home/enrichetta/Documents/Project/Results','ConsnotconsHd.txt'),'w') as p:
+	with open(os.path.join('/home/kettina/Scrivania/Project/Results','ConsnotconsHd.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
 		print '{0:15} {1:12} {2:12} '.format('cons_Hd' ,len(CONconsH_Hd), len(NOTconsH_Hd))
@@ -178,7 +178,7 @@ def result2():
 		sys.stdout=saveout
 
 if __name__ == '__main__':
-	info('/home/enrichetta/Documents/Project/Results/generalresult.txt')
+	info('/home/kettina/Scrivania/generalresult.txt')
 	print_result1()	
 	print_result2()
 	analysis()
