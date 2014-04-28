@@ -170,7 +170,7 @@ def result2():
 	with open(os.path.join('/home/enrichetta/Documents/Project/Results','ConsnotconsHd.txt'),'w') as p:
 		saveout=sys.stdout
 		sys.stdout=p
-		print '{0:15} {1:12} {2:12} '.format('cons_Hd' ,len(CONconsH_Hd), len(NOTconsH_Hd))
+		print '{0:15} {1:12} {2:12} '.format('cons_Hd' ,len(CONcons_Hd), len(NOTcons_Hd))
 		
 		print '{0:15} {1:12} {2:12} '.format('notcons_Hd', len(CONnotcons_Hd), len(NOTnotcons_Hd))
 		
